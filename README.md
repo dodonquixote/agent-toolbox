@@ -40,13 +40,6 @@ print(page["title"], page["text"][:200])
 | `repair_json` | 4 | Repair malformed JSON (a common LLM output problem) and validate it. |
 | MCP server | 5 | Expose every tool over the Model Context Protocol (stdio). |
 
-## Roadmap
-
-- **Day 1** — Project scaffold, tool registry, `fetch_url`, tests. ✅
-- **Day 2** — Sandboxed file tools.
-- **Day 3** — Persistent memory (SQLite).
-- **Day 4** — Sandboxed code execution + JSON repair.
-- **Day 5** — MCP server, end-to-end agent example, documentation polish.
 
 ## Design notes
 
