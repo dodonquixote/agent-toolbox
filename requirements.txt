@@ -1,0 +1,2 @@
+# agent-toolbox core uses only the Python standard library (Python 3.10+).
+# Optional extras are documented in README.md as they are added.
