@@ -1,6 +1,6 @@
 # agent-toolbox
 
-**Ready-to-use tools for AI agents** — a small, dependency-free Python library that gives an LLM agent practical abilities (fetching web pages, working with files, remembering things, running code) through one uniform interface.
+**Tools AI agents don't come with** — a small, dependency-free Python library of *non-basic* tools for AI agents. Not another fetch/file/memory clone: every tool here does a job that agent frameworks don't ship built in, aimed at real agent pain points — hallucinated citations, pages that change silently, feeds that repeat themselves, and data locked inside HTML tables.
 
 Every tool is a plain Python function registered with a JSON-schema description, so the same tool can be:
 
@@ -33,19 +33,27 @@ print(page["title"], page["text"][:200])
 
 | Tool | Day | What it does |
 | --- | --- | --- |
-| `fetch_url` | 1 | Fetch a web page and return clean readable text (scripts/styles stripped) for the LLM to read. |
-| `read_file` / `write_file` / `list_dir` | 2 | Sandboxed file access, restricted to a workspace root. |
-| `remember` / `recall` / `search_memory` | 3 | Persistent memory for agents, backed by SQLite. |
-| `run_python` | 4 | Run a Python snippet in a sandboxed subprocess with a timeout. |
-| `repair_json` | 4 | Repair malformed JSON (a common LLM output problem) and validate it. |
+| `fetch_url` | 1 | Foundation primitive: fetch a web page and return clean readable text (scripts/styles stripped). The higher-level tools below build on it. |
+| `verify_citations` | 2 | Fact-check an LLM's sources: given claims with their cited URLs, it fetches each source and scores whether the source text actually supports the claim — flagging dead links and unsupported citations. |
+| `watch_page` | 3 | Persistent page-change monitor: snapshots a page and, on later checks, reports exactly which lines were added or removed. |
+| `feed_digest` | 4 | RSS/Atom reader with memory: returns only the items you have not seen before, deduplicated across runs. |
+| `extract_tables` | 4 | Pull the HTML tables out of a page as structured JSON rows an agent can compute on. |
 | MCP server | 5 | Expose every tool over the Model Context Protocol (stdio). |
 
+## Roadmap
+
+- **Day 1** — Project scaffold, tool registry, `fetch_url` foundation. ✅
+- **Day 2** — `verify_citations`: hallucinated-citation checker.
+- **Day 3** — `watch_page`: persistent web change monitor.
+- **Day 4** — `feed_digest` (RSS with dedupe memory) + `extract_tables` (HTML tables → JSON).
+- **Day 5** — MCP server, end-to-end agent example, documentation polish.
 
 ## Design notes
 
+- **Deliberately not basic**: no file read/write, shell, or generic memory tools — agents already have those. Each tool here adds a capability agents lack: verification, persistent monitoring, deduplication, structured extraction.
 - **Standard library only** for the core: no dependency surprises when an agent environment installs it.
 - **One registry, many front doors**: function calling today, MCP tomorrow, same tool code.
-- **Safety first**: tools that touch the filesystem or execute code are sandboxed and explicit about their limits (Days 2 and 4).
+- **State where it matters**: monitoring and dedupe tools keep their own persistent state (SQLite), so an agent with no memory still gets continuity.
 
 ## Tests
 
