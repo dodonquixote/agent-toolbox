@@ -40,13 +40,6 @@ print(page["title"], page["text"][:200])
 | `extract_tables` | 4 | Pull the HTML tables out of a page as structured JSON rows an agent can compute on. |
 | MCP server | 5 | Expose every tool over the Model Context Protocol (stdio). |
 
-## Roadmap
-
-- **Day 1** — Project scaffold, tool registry, `fetch_url` foundation. ✅
-- **Day 2** — `verify_citations`: hallucinated-citation checker.
-- **Day 3** — `watch_page`: persistent web change monitor.
-- **Day 4** — `feed_digest` (RSS with dedupe memory) + `extract_tables` (HTML tables → JSON).
-- **Day 5** — MCP server, end-to-end agent example, documentation polish.
 
 ## Design notes
 
