@@ -48,6 +48,15 @@ print(page["title"], page["text"][:200])
 - **One registry, many front doors**: function calling today, MCP tomorrow, same tool code.
 - **State where it matters**: monitoring and dedupe tools keep their own persistent state (SQLite), so an agent with no memory still gets continuity.
 
+## Persistent state
+
+`watch_page` (and, from Day 4, `feed_digest`) keep their own snapshots in
+a small SQLite database, so an agent with no memory still gets continuity
+between runs. The database lives outside the project:
+
+- default: `~/.agent-toolbox/state.db`
+- override: set the `AGENT_TOOLBOX_STATE` environment variable to a path.
+
 ## Tests
 
 ```bash
