@@ -6,7 +6,8 @@ Every tool is a plain Python function registered with a JSON-schema description,
 
 - passed to an LLM as an **OpenAI-style function definition**,
 - called directly from Python, and
-- served over **MCP (Model Context Protocol)** — see the Day 5 roadmap item.
+- served over **MCP (Model Context Protocol)** — see the
+  [MCP server](#mcp-server) section below.
 
 Built in public, one increment per day.
 
@@ -57,10 +58,48 @@ between runs. The database lives outside the project:
 - default: `~/.agent-toolbox/state.db`
 - override: set the `AGENT_TOOLBOX_STATE` environment variable to a path.
 
+## MCP server
+
+Every registered tool is also available over the Model Context
+Protocol, served over stdio by `agent_toolbox/server.py` — standard
+library only, no MCP SDK required. It speaks JSON-RPC 2.0 and
+implements `initialize`, `tools/list`, `tools/call` and `ping`.
+
+Run it directly:
+
+```bash
+python -m agent_toolbox.server
+```
+
+Or point an MCP client (Claude Code, Cursor, Copilot, …) at it:
+
+```json
+{
+  "mcpServers": {
+    "agent-toolbox": {
+      "command": "python",
+      "args": ["-m", "agent_toolbox.server"],
+      "cwd": "/path/to/agent-toolbox"
+    }
+  }
+}
+```
+
+Restart the client and the agent-toolbox tools appear alongside its
+built-in ones. Any tool added to the registry is automatically exposed
+— nothing extra to wire up.
+
 ## Tests
 
 ```bash
 python -m unittest discover -s tests
+```
+
+Try the chained example (watch a changelog, then verify a claim about
+the change — no API key needed):
+
+```bash
+python examples/agent_example.py
 ```
 
 ## License
